@@ -1,0 +1,39 @@
+﻿body {
+    font-family: Tahoma;
+    margin: 0px;
+}
+
+header {
+    padding: 20px;
+    background-color: #749ca7;
+    color: #e0eaed;
+    letter-spacing: -1px;
+}
+
+h1, h2 {
+    margin: 0px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+}
+
+    footer p {
+        padding: 5px;
+        font-size: 70%;
+    }
+
+section {
+    max-width: 960px;
+    padding: 20px;
+}
+
+    section ul {
+        padding: 0px;
+    }
+
+.form-grupo {
+    margin-bottom: 10px;
+}

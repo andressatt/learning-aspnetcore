@@ -1,0 +1,28 @@
+﻿@{
+    Layout = null;
+}
+@using Lab02.App
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <link href="~/Estilos.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <header>
+            <h1>Exemplo Web Page</h1>
+            <h2>Html, Javascript, Css, Razor e Web Pages</h2>
+            <a href="~/Default.cshtml">Voltar</a>
+        </header>
+        <section>
+            <p>Comentários:</p>
+            <pre>@WebApp.ComentariosObter()</pre>
+        </section>
+    </div>
+</body>
+</html>

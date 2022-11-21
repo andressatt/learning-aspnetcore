@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Tabuada</title>
+</head>
+<body>
+    <div>
+        @{
+            int numero = 8;
+            <h3>Tabuada do número: @numero</h3>
+            <hr />
+            for (int i = 1; i <= 10; i++)
+            {
+                <span>@i x @numero = @(i * numero)</span><br />
+            }
+        }
+    </div>
+</body>
+</html>

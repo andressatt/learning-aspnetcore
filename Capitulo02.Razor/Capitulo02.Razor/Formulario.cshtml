@@ -1,0 +1,27 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <form action="" method="get">
+            <label>Nome:</label>
+            <input name="nome" />
+            <input type="password" name="senha" />
+            <button type="submit">Enviar</button>
+        </form>
+        @if (IsPost)
+        {
+            var nome = Request.Form["nome"];
+            <p>Bem vindo, @nome</p>
+        }
+    </div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <link href="~/Estilos.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <header>
+            <h1>Exemplo Web Page</h1>
+            <h2>
+                Tecnologias Web - Html, Javascript, Css, Razor e Web Pages
+            </h2>
+        </header>
+        <section>
+            <p>
+                No desenvolvimento Web, diversas tecnologias são utilizadas.
+                Algumas são executadas do lado do Servidor(Server) e outras são executadas do lado do Cliente(Client).
+            </p>
+            <dl>
+                <dt>
+                    <a href="javascript:exibirEsconderElemento('ddClient')">
+                        Tecnologias: Client
+                    </a>
+                </dt>
+                <dd id="ddClient" style="display:none">
+                    <ul>
+                        <li>Html</li>
+                        <li>Css</li>
+                        <li>Javascript</li>
+                    </ul>
+                </dd>
+                <dt>
+                    <a href="javascript:exibirEsconderElemento('ddServer')">
+                        Tecnologias: Server
+                    </a>
+                </dt>
+                <dd id="ddServer" style="display:none">
+                    <ul>
+                        <li>C#</li>
+                        <li>ASP.NET</li>
+                        <li>Web Pages</li>
+                        <li>MVC</li>
+                        <li>Razor</li>
+                    </ul>
+                </dd>
+            </dl>
+            <p>
+                <a href="ComentarioForm.cshtml">Deixe seu comentário</a>
+            </p>
+            <p>
+                <a href="ComentarioLista.cshtml">Veja os comentários</a>
+            </p>
+        </section>
+        <footer>
+            <hr />
+            <p>
+                Desenvolvido para o curso de ASP.NET
+                &copy; @DateTime.Now.Year - Impacta Tecnologia
+            </p>
+        </footer>
+    </div>
+    <script>
+        function exibirEsconderElemento(elementoId) {
+            var elemento = document.getElementById(elementoId);
+            if (elemento.style.display == "none") {
+                elemento.style.display = "block";
+            }
+            else {
+                elemento.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

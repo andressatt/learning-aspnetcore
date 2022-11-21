@@ -1,0 +1,48 @@
+﻿@{
+    Layout = null;
+}
+@using Lab02.App;
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <link href="~/Estilos.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <header>
+            <h1>Exemplo Web Page</h1>
+            <h2>Html, Javascript, Css, Razor e Web Pages</h2>
+            <a href="~/Default.cshtml">Voltar</a>
+        </header>
+        <section>
+            @if (!IsPost)
+            {
+                Response.Redirect("~/comentarioForm.cshtml");
+            }
+            else
+            {
+                string nome = Request.Form["nome"];
+                string comentario = Request.Form["comentario"];
+                if (string.IsNullOrWhiteSpace(nome) || string.IsNullOrWhiteSpace(comentario))
+                {
+                    Response.Redirect("~/comentarioForm.cshtml");
+                }
+                else
+                {
+                    WebApp.ComentarioIncluir(nome, comentario);
+                }
+            }
+            <p>Obrigado por seu comentário</p>
+            <p>
+                <a href="~/Default.cshtml">Voltar</a>
+                <a href="~/ComentarioLista.cshtml">Exibir Comentários</a>
+            </p>
+        </section>
+    </div>
+</body>
+</html>

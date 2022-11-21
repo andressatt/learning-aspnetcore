@@ -1,0 +1,65 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Aula RAZOR</title>
+</head>
+<body>
+    <div>
+        <p>Hoje é @DateTime.Now.ToShortDateString()</p>
+
+        @{
+            var x = 10;
+            var y = 5;
+            var idade = 34.0;
+            var mensagem = "Saudações Cariocas";
+        }
+        A soma de @x com @y é @(x + y)<br />
+        A saudação de hoje é: @mensagem<br />
+        Dia da Semana: @DateTime.Now.DayOfWeek
+    </div>
+
+    <hr />
+    <!-- Cadastrar vários números -->
+    @{
+        var n1 = 1;
+        var n2 = 2;
+        var n3 = 3;
+        @* índices do array       0, 1, 2, 3 *@
+        var numeros = new int[] { 1, 2, 3, 4 };
+        foreach (int i in numeros)
+        {
+            <p>O valor de i é: @i</p>
+        }
+
+        <hr />
+        for (int j = 1; j <= 5; j++)
+        {
+            <span>O valor de j é: @j</span><br />
+        }
+
+        <hr />
+        if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday)
+        {
+            <p>Hoje é Sábado.</p>
+        }
+        else {
+            <p>Hoje não é Sábado.</p>
+        }
+
+        <hr />
+        switch(DateTime.Now.Hour)
+        {
+            case 13: <p>Hora do Almoço</p> break;
+            case 19: <p>Hora do Jantar</p> break;
+            default: <p>Hora de ???</p> break;
+        }
+    }
+</body>
+</html>
