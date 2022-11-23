@@ -1,0 +1,47 @@
+﻿@model IEnumerable<AgendaMedica.Models.Agendamento>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.HorarioAgendamento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TempoConsulta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HorarioFinalAtendimento)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.HorarioAgendamento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TempoConsulta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HorarioFinalAtendimento)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
