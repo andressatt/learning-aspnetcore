@@ -1,0 +1,173 @@
+﻿@using System.Text.Json
+@using System.Text.Encodings.Web
+@model IEnumerable<Lab.Contas.Models.ContaPagar>
+
+@{
+    ViewData["Title"] = "Dashboard";
+
+    var contasMesAtual = Model
+        .Where(x => x.Vencimento.Month == DateTime.Now.Month && x.Vencimento.Year == DateTime.Now.Year)
+        .OrderByDescending(x => x.Vencimento).ThenByDescending(x => x.Valor)
+        .ToList();
+    decimal somaMesAtual = contasMesAtual.Sum(x => x.Valor);
+
+    var contasMesAnterior = Model
+        .Where(x => x.Vencimento.Month == DateTime.Now.AddMonths(-1).Month && x.Vencimento.Year == DateTime.Now.AddMonths(-1).Year)
+        .ToList();
+    decimal somaMesAnterior = contasMesAnterior.Sum(x => x.Valor);
+
+    decimal diffMes = (somaMesAtual / somaMesAnterior) - 1;
+
+    var contasParaGrafico = contasMesAtual
+        .OrderByDescending(x => x.Valor)
+        .ThenBy(x => x.Tipo.GetDescription())
+        .Select(x => new { value = x.Valor, name = x.Tipo.GetDescription() })
+        .ToList();
+}
+
+<div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+<section class="section dashboard">
+    <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-4">
+            <div class="card info-card revenue-card">
+                <div class="card-body">
+                    <h5 class="card-title">Contas a Pagar <span>| Este Mês</span></h5>
+                    <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                        <div class="ps-3">
+                            <h6>@somaMesAtual.ToString("C2")</h6>
+                            @if (diffMes > 0)
+                            {
+                                <span class="text-danger small pt-1 fw-bold">
+                                    @(diffMes.ToString("P2"))
+                                </span>
+                                <span class="text-muted small pt-2 ps-1">aumento</span>
+                            }
+                            else
+                            {
+                                <span class="text-success small pt-1 fw-bold">
+                                    @((-diffMes).ToString("P2"))
+                                </span>
+                                <span class="text-muted small pt-2 ps-1">diminuição</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li class="dropdown-header text-start">
+                            <h6>Filtro</h6>
+                        </li>
+                        <li><a class="dropdown-item" href="#">Este Mês</a></li>
+                        <li><a class="dropdown-item" href="#">Este Ano</a></li>
+                    </ul>
+                </div>
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Contas a Pagar <span>| Este Mês</span></h5>
+                    <div id="trafficChart" style="min-height: 400px;" class="echart">
+                    </div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                            echarts.init(document.querySelector("#trafficChart")).setOption({
+                                tooltip: {
+                                    trigger: 'item'
+                                },
+                                legend: {
+                                    top: '5%',
+                                    left: 'center'
+                                },
+                                series: [{
+                                    name: 'Tipo de Conta',
+                                    type: 'pie',
+                                    radius: ['40%', '70%'],
+                                    avoidLabelOverlap: false,
+                                    label: {
+                                        show: false,
+                                        position: 'center'
+                                    },
+                                    emphasis: {
+                                        label: {
+                                            show: true,
+                                            fontSize: '18',
+                                            fontWeight: 'bold'
+                                        }
+                                    },
+                                    labelLine: {
+                                        show: false
+                                    },
+                                    data: @Html.Raw(JsonSerializer.Serialize(contasParaGrafico))
+                                }]
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-8">
+            <div class="row">
+                <!-- Contas a Pagar | Este Mês -->
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+                        <div class="card-body">
+                            <h5 class="card-title">Contas a Pagar <span>| Este Mês</span></h5>
+                            <table class="table table-borderless datatable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Tipo</th>
+                                        <th scope="col">Valor</th>
+                                        <th scope="col">Vencimento</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in contasMesAtual)
+                                    {
+                                        <tr>
+                                            <td scope="row">
+                                                <a asp-action="Edit" asp-route-id="@item.Id">
+                                                    #@item.Id
+                                                </a>
+                                            </td>
+                                            <td>@item.Tipo.GetDescription()</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Valor)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Vencimento)</td>
+                                            <td>
+                                                @if (item.Status == Util.StatusContaPagar.NaoPago)
+                                                {
+                                                    <span class="badge bg-danger">@item.Status.GetDescription()</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">@item.Status.GetDescription()</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- End Right side columns -->
+
+    </div>
+</section>

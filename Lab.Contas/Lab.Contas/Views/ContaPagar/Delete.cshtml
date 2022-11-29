@@ -1,0 +1,62 @@
+﻿@model Lab.Contas.Models.ContaPagar
+
+@{
+    ViewData["Title"] = "Conta a Pagar";
+}
+
+<div class="pagetitle">
+    <h1>Contas a Pagar</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Cadastros</li>
+            <li class="breadcrumb-item"><a asp-area="" asp-controller="ContaPagar" asp-action="Index">Contas a Pagar</a></li>
+            <li class="breadcrumb-item active">Excluir</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+<section class="section details">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tem certeza de que deseja excluir este registro?</h5>
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Tipo)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Model.Tipo.GetDescription()
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Valor)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Valor)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Vencimento)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Vencimento)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Observacoes)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Observacoes)
+                    </dd>
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Status)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Model.Status.GetDescription()
+                    </dd>
+                </dl>
+                <form asp-action="Delete">
+                    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+                    <input type="submit" value="Excluir" class="btn btn-danger" />
+                    <input type="hidden" asp-for="Id" />
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
