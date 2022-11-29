@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-ControleDeContatos-e79c9c75-4e1e-47e9-924d-d9f37d1a5c3c</UserSecretsId>
   </PropertyGroup>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using ControleDeContatos.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControleDeContatos.Data
@@ -9,5 +10,9 @@ namespace ControleDeContatos.Data
             : base(options)
         {
         }
+        
+        //Definir os DbSet - Configurar as tabelas (entidades)
+        //Classe ContatoModel servirá de base
+        public DbSet<ContatoModel> Contatos { get; set; }
     }
 }

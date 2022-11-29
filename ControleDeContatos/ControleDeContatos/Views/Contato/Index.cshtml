@@ -1,0 +1,62 @@
+﻿@model List<ContatoModel>
+
+@{
+    ViewData["Title"] = "Listagem de Contatos";
+
+    string msgSucesso = TempData["MsgSucesso"]?.ToString();
+    string msgDanger = TempData["MsgDanger"]?.ToString();
+}
+
+<h1>Listagem de Contatos</h1>
+<div class="d-grid gap-2 d-md-flex justify-content-md-start">
+    <a class="btn btn-primary" asp-controller="Contato" asp-action="Criar" role="button">Adicionar novo contato</a>
+</div>
+
+<br />
+
+@if (!string.IsNullOrEmpty(msgSucesso))
+{
+    <div class="alert alert-success" role="alert">
+        <button type="button" class="btn btn-success btn-sm close-alert" aria-label="Close">X</button>
+        @msgSucesso
+    </div>
+}
+else if (!string.IsNullOrEmpty(msgDanger))
+{
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="btn btn-danger btn-sm close-alert" aria-label="Close">X</button>
+        @msgDanger
+    </div>
+}
+
+<table class="table" id="table-contatos">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Email</th>
+            <th scope="col">Celular</th>
+            <th scope="col">Celular</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (ContatoModel contato in Model)
+            {
+                <tr>
+                    <th scope="row">@contato.ID</th>
+                    <td>@contato.Nome</td>
+                    <td>@contato.Email</td>
+                    <td>@contato.Celular</td>
+                    <td>
+                        <div class="btn-group" role="button">
+                            <a role="button" class="btn btn-primary" asp-controller="Contato" asp-route-id="@contato.ID" asp-action="Editar">Editar</a>
+                            <a role="button" class="btn btn-danger" asp-controller="Contato" asp-route-id="@contato.ID" asp-action="ApagarConfirmacao">Apagar</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
