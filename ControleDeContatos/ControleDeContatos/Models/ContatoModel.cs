@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ControleDeContatos.Models
 {
@@ -9,6 +10,7 @@ namespace ControleDeContatos.Models
         [Required(ErrorMessage = "Digite o nome do contato")]
         public string Nome { get; set; }
 
+        [DisplayName("E-mail")]
         [Required(ErrorMessage = "Digite o e-mail do contato")]
         [EmailAddress(ErrorMessage = "O e-mail informado não é valido!")]
         public string Email { get; set; }

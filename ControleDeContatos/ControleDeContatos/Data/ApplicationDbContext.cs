@@ -14,5 +14,6 @@ namespace ControleDeContatos.Data
         //Definir os DbSet - Configurar as tabelas (entidades)
         //Classe ContatoModel servirá de base
         public DbSet<ContatoModel> Contatos { get; set; }
+        public DbSet<UsuarioModel> Usuarios { get; set; }
     }
 }

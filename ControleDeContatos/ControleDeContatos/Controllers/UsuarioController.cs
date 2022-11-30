@@ -1,47 +1,49 @@
-﻿using ControleDeContatos.Models;
+﻿using ControleDeContatos.Enums;
+using ControleDeContatos.Models;
 using ControleDeContatos.Repositorio;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ControleDeContatos.Controllers
 {
     [Authorize]
-    public class ContatoController : Controller
+    public class UsuarioController : Controller
     {
-        // 2 - criamos esta variável para que ela carregue o contrato e faça
-        //     o tratamento dentro desta classe por isso private e readonly.
-        private readonly IContatoRepositorio _contatoRepositorio;
+        private readonly IUsuarioRepositorio _usuarioRepositorio;
 
-        // 1 - inserir uma injeção para o construtor do IContatoRepositorio.
-        public ContatoController(IContatoRepositorio contatoRepositorio)
+        public UsuarioController(IUsuarioRepositorio usuarioRepositorio)
         {
-            _contatoRepositorio = contatoRepositorio;
+            _usuarioRepositorio = usuarioRepositorio;
         }
 
         public IActionResult Index()
         {
-            List<ContatoModel> contatos = _contatoRepositorio.BuscarTodos();
-            return View(contatos);
+            List<UsuarioModel> usuarios = _usuarioRepositorio.BuscarTodos();
+            return View(usuarios);
         }
 
         public IActionResult Criar()
         {
+            PopularViewBags();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Criar(ContatoModel contato)
+        public IActionResult Criar(UsuarioModel usuario)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    _contatoRepositorio.Adicionar(contato);
-                    TempData["MsgSucesso"] = "Contato cadastrado com sucesso.";
+                    usuario.DataCadastro = DateTime.Now;
+                    _usuarioRepositorio.Adicionar(usuario);
+                    TempData["MsgSucesso"] = "Usuário cadastrado com sucesso.";
 
                     return RedirectToAction("Index");
                 }
-                return View(contato);
+                PopularViewBags();
+                return View(usuario);
             }
             catch (Exception ex)
             {
@@ -52,23 +54,25 @@ namespace ControleDeContatos.Controllers
 
         public IActionResult Editar(int id)
         {
-            ContatoModel contato = _contatoRepositorio.ListarPorId(id);
-            return View(contato);
+            UsuarioModel usuario = _usuarioRepositorio.ListarPorId(id);
+            PopularViewBags();
+            return View(usuario);
         }
 
         [HttpPost]
-        public IActionResult Alterar(ContatoModel contato)
+        public IActionResult Alterar(UsuarioModel usuario)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    _contatoRepositorio.Atualizar(contato);
-                    TempData["MsgSucesso"] = "Contato atualizado com sucesso.";
+                    _usuarioRepositorio.Atualizar(usuario);
+                    TempData["MsgSucesso"] = "Usuário atualizado com sucesso.";
 
                     return RedirectToAction("Index");
                 }
-                return View("Editar", contato);
+                PopularViewBags();
+                return View("Editar", usuario);
             }
             catch (Exception ex)
             {
@@ -79,7 +83,7 @@ namespace ControleDeContatos.Controllers
 
         public IActionResult ApagarConfirmacao(int id)
         {
-            ContatoModel contato = _contatoRepositorio.ListarPorId(id);
+            UsuarioModel contato = _usuarioRepositorio.ListarPorId(id);
             return View(contato);
         }
 
@@ -87,10 +91,10 @@ namespace ControleDeContatos.Controllers
         {
             try
             {
-                bool apagou = _contatoRepositorio.Apagar(id);
+                bool apagou = _usuarioRepositorio.Apagar(id);
                 if (apagou)
                 {
-                    TempData["MsgSucesso"] = "Contato removido com sucesso.";
+                    TempData["MsgSucesso"] = "Usuário removido com sucesso.";
                 }
                 else
                 {
@@ -104,6 +108,15 @@ namespace ControleDeContatos.Controllers
                 TempData["MsgErro"] = $"Falha na remoção. Erro: {ex.Message}";
                 return RedirectToAction("Index");
             }
+        }
+
+        private void PopularViewBags()
+        {
+            ViewBag.Perfis =
+                new SelectList(
+                    Enum.GetValues(typeof(PerfilEnum)).Cast<PerfilEnum>().ToDictionary(x => (int)x, x => x),
+                    "Key", "Value"
+                );
         }
     }
 }

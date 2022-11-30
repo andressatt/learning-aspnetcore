@@ -12,22 +12,22 @@
     <input type="hidden" asp-for="ID" />
 
     <div class="mb-3">
-        <label for="nome">Nome</label>
+        <label asp-for="Nome" class="form-label"></label>
         <input type="text" asp-for="Nome" class="form-control" placeholder="Digite seu nome">
-        @Html.ValidationMessageFor(x =>x.Nome)
+        <span asp-validation-for="Nome" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="email">E-mail </label>
+        <label asp-for="Email" class="form-label"></label>
         <input type="text" asp-for="Email" class="form-control" placeholder="Digite seu e-mail" />
-        @Html.ValidationMessageFor(x =>x.Email)
+        <span asp-validation-for="Email" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="celular">Celular</label>
+        <label asp-for="Celular" class="form-label"></label>
         <input type="text" asp-for="Celular" class="form-control" placeholder="Digite seu celular">
-        @Html.ValidationMessageFor(x =>x.Celular)
+        <span asp-validation-for="Celular" class="text-danger"></span>
     </div>
     <div class="d-grid gap-2">
-        <button type="submit" class="btn btn-primary ">Alterar Contato</button>
+        <button type="submit" class="btn btn-primary ">Salvar</button>
         <a class="btn btn-secondary" asp-controller="Contato" asp-action="Index" role="button">Voltar</a>
     </div>
 </form>

@@ -6,7 +6,7 @@ $('.close-alert').click(function () {
     $('.alert').hide('hide');
 });
 
-$('#table-contatos').DataTable({
+$('.datatable').DataTable({
     "ordering": true,
     "paging": true,
     "searching": true,

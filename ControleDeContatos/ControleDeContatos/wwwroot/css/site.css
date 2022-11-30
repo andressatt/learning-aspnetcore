@@ -17,10 +17,6 @@ body {
   margin-bottom: 60px;
 }
 
-.field-validation-error {
-    color: #e01d1d;
-}
-
 .close-alert {
     position: absolute;
     right: -10px;

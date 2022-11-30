@@ -38,7 +38,7 @@ namespace ControleDeContatos.Repositorio
         public bool Apagar(int id)
         {
             ContatoModel contatoDb = ListarPorId(id);
-            if (contatoDb == null) throw new Exception("Houve um erro de Exclusão");
+            if (contatoDb == null) throw new Exception("Houve um erro de exclusão");
 
             _bancoContext.Contatos.Remove(contatoDb);
             _bancoContext.SaveChanges();
