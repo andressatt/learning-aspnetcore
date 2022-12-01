@@ -5,23 +5,6 @@ namespace Lab.Contas.Models
 {
     public static class Util
     {
-        public enum TipoConta
-        {
-            IPVA,
-            Aluguel,
-            Energia,
-            Internet,
-            [Description("Gás")]
-            Gas,
-            Escola,
-            [Description("Cartão de Crédito")]
-            CartaoCredito,
-            Outros,
-            [Description("Pedágio")]
-            Pedagio,
-            Clube
-        }
-
         public enum StatusContaPagar
         {
             Pago,

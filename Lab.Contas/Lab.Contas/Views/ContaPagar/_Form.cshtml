@@ -4,9 +4,9 @@
     var listaStatusConta = ViewBag.StatusContaPagar;
 }
 <div class="col-md-3">
-    <label asp-for="Tipo" class="form-label"></label>
-    <select asp-for="Tipo" class="form-control form-select" asp-items="listaTipoConta"></select>
-    <span asp-validation-for="Tipo" class="text-danger"></span>
+    <label asp-for="Tipo.Id" class="form-label"></label>
+    <select asp-for="Tipo.Id" class="form-control form-select" asp-items="listaTipoConta"></select>
+    <span asp-validation-for="Tipo.Id" class="text-danger"></span>
 </div>
 <div class="col-md-3">
     <label asp-for="Valor" class="form-label"></label>

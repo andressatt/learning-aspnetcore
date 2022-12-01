@@ -8,8 +8,9 @@ namespace Lab.Contas.Models
     {
         public int Id { get; set; }
 
+        [DisplayName("Tipo")]
         [Required(ErrorMessage = "Campo obrigatório")]
-        public TipoConta Tipo { get; set; }
+        public TipoContaPagar Tipo { get; set; } = default!;
 
         [Required(ErrorMessage = "Campo obrigatório")]
         [DataType(DataType.Currency, ErrorMessage = "O valor deve ser numérico.")]

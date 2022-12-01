@@ -9,5 +9,6 @@
         public decimal TotalPago { get; set; }
         public decimal TotalNaoPago { get; set; }
         public decimal DiferencaMes { get; set; }
+        public string ContasPagarParaGrafico { get; set; } = default!;
     }
 }

@@ -4,6 +4,7 @@ using Lab.Contas.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lab.Contas.Migrations
 {
     [DbContext(typeof(LabContasContext))]
-    partial class LabContasContextModelSnapshot : ModelSnapshot
+    [Migration("20221201171731_Create-TipoContaPagar")]
+    partial class CreateTipoContaPagar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +51,7 @@ namespace Lab.Contas.Migrations
 
                     b.HasIndex("TipoId");
 
-                    b.ToTable("ContaPagar", (string)null);
+                    b.ToTable("ContaPagar");
                 });
 
             modelBuilder.Entity("Lab.Contas.Models.TipoContaPagar", b =>
@@ -66,7 +68,7 @@ namespace Lab.Contas.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TipoContaPagar", (string)null);
+                    b.ToTable("TipoContaPagar");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

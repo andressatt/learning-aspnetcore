@@ -11,6 +11,7 @@ namespace Lab.Contas.Data
         {
         }
 
+        public DbSet<TipoContaPagar> TipoContaPagar { get; set; } = default!;
         public DbSet<ContaPagar> ContaPagar { get; set; } = default!;
     }
 }

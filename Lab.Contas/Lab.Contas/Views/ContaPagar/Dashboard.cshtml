@@ -1,15 +1,6 @@
-﻿@using System.Text.Json
-@using System.Text.Encodings.Web
-@model Lab.Contas.Models.ContaPagarViewModel
-
+﻿@model Lab.Contas.Models.ContaPagarViewModel
 @{
     ViewData["Title"] = "Dashboard";
-
-    var contasParaGrafico = Model.ListaContasPagarMes
-        .OrderByDescending(x => x.Valor)
-        .ThenBy(x => x.Tipo.GetDescription())
-        .Select(x => new { value = x.Valor, name = x.Tipo.GetDescription() })
-        .ToList();
 }
 
 <div class="pagetitle">
@@ -133,7 +124,7 @@
                                                     #@item.Id
                                                 </a>
                                             </td>
-                                            <td>@item.Tipo.GetDescription()</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Tipo.Descricao)</td>
                                             <td>@Html.DisplayFor(modelItem => item.Valor)</td>
                                             <td>@Html.DisplayFor(modelItem => item.Vencimento)</td>
                                             <td>
@@ -192,7 +183,7 @@
                                     labelLine: {
                                         show: false
                                     },
-                                    data: @Html.Raw(JsonSerializer.Serialize(contasParaGrafico))
+                                    data: @Html.Raw(Model.ContasPagarParaGrafico)
                                 }]
                             });
                         });

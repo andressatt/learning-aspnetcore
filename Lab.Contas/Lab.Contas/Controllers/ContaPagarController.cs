@@ -6,6 +6,7 @@ using Lab.Contas.Models;
 using static Lab.Contas.Models.Util;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
+using System.Text.Json;
 
 namespace Lab.Contas.Controllers
 {
@@ -21,7 +22,7 @@ namespace Lab.Contas.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Dashboard(string anoMes)
         {
-            var contasPagar = await _context.ContaPagar.ToListAsync();
+            var contasPagar = await _context.ContaPagar.Include(x => x.Tipo).ToListAsync();
 
             var mesSelecionado = DateTime.Now;
             if (!string.IsNullOrEmpty(anoMes) && Regex.IsMatch(anoMes, "[0-9]{4}-[0-9]{1,2}"))
@@ -51,6 +52,12 @@ namespace Lab.Contas.Controllers
                 : somaMesAnterior > 0 ? (somaMesAtual / somaMesAnterior) - 1
                 : 1;
 
+            var contasParaGrafico = contasMesAtual
+                .OrderByDescending(x => x.Valor)
+                .ThenBy(x => x.Tipo.Descricao)
+                .Select(x => new { value = x.Valor, name = x.Tipo.Descricao })
+                .ToList();
+
             return View(new ContaPagarViewModel
             {
                 Ano = mesSelecionado.Year,
@@ -59,7 +66,8 @@ namespace Lab.Contas.Controllers
                 TotalPagar = somaMesAtual,
                 TotalPago = somaPagoMesAtual,
                 TotalNaoPago = somaNaoPagoMesAtual,
-                DiferencaMes = diffMes
+                DiferencaMes = diffMes,
+                ContasPagarParaGrafico = JsonSerializer.Serialize(contasParaGrafico)
             });
         }
 
@@ -67,8 +75,7 @@ namespace Lab.Contas.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.ContaPagar
-                .OrderByDescending(x => x.Vencimento)
-                .ThenByDescending(x => x.Valor)
+                .Include(x => x.Tipo)
                 .ToListAsync());
         }
 
@@ -80,8 +87,7 @@ namespace Lab.Contas.Controllers
                 return NotFound();
             }
 
-            var contaPagar = await _context.ContaPagar
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var contaPagar = _context.ContaPagar.Include(x => x.Tipo).ToList().Find(m => m.Id == id);
             if (contaPagar == null)
             {
                 return NotFound();
@@ -106,6 +112,9 @@ namespace Lab.Contas.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    if (contaPagar.Tipo != null)
+                        contaPagar.Tipo = await _context.TipoContaPagar.FindAsync(contaPagar.Tipo.Id);
+
                     if (ContaPagarDuplicada(contaPagar))
                     {
                         TempData["MsgErro"] = "Conta de mesmo Tipo, Valor e Vencimento já cadastrada.";
@@ -136,7 +145,7 @@ namespace Lab.Contas.Controllers
                 return NotFound();
             }
 
-            var contaPagar = await _context.ContaPagar.FindAsync(id);
+            var contaPagar = _context.ContaPagar.Include(x => x.Tipo).ToList().Find(x => x.Id == id);
             if (contaPagar == null)
             {
                 return NotFound();
@@ -160,6 +169,9 @@ namespace Lab.Contas.Controllers
             {
                 try
                 {
+                    if (contaPagar.Tipo != null)
+                        contaPagar.Tipo = await _context.TipoContaPagar.FindAsync(contaPagar.Tipo.Id);
+
                     if (ContaPagarDuplicada(contaPagar))
                     {
                         TempData["MsgErro"] = "Conta de mesmo Tipo, Valor e Vencimento já cadastrada.";
@@ -200,7 +212,7 @@ namespace Lab.Contas.Controllers
                 return NotFound();
             }
 
-            var contaPagar = await _context.ContaPagar.FirstOrDefaultAsync(m => m.Id == id);
+            var contaPagar = await _context.ContaPagar.Include(x => x.Tipo).FirstOrDefaultAsync(m => m.Id == id);
             if (contaPagar == null)
             {
                 return NotFound();
@@ -246,6 +258,7 @@ namespace Lab.Contas.Controllers
         private bool ContaPagarDuplicada(ContaPagar contaPagar)
         {
             return _context.ContaPagar
+                .Include(x => x.Tipo)
                 .Any(x => x.Id != contaPagar.Id && x.Tipo == contaPagar.Tipo && x.Valor == contaPagar.Valor && x.Vencimento == contaPagar.Vencimento);
         }
 
@@ -253,7 +266,7 @@ namespace Lab.Contas.Controllers
         {
             ViewBag.TiposConta =
                 new SelectList(
-                    Enum.GetValues(typeof(TipoConta)).Cast<TipoConta>().ToDictionary(x => (int)x, x => x.GetDescription()),
+                    _context.TipoContaPagar.ToDictionary(x => x.Id, x => x.Descricao),
                     "Key", "Value"
                 ).OrderBy(x => x.Text);
             ViewBag.StatusContaPagar =
