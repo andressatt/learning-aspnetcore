@@ -1,0 +1,72 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <li class="nav-item dropdown pe-3">
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <span class="d-none d-md-block dropdown-toggle ps-2">@UserManager.GetUserName(User)</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                    <li class="dropdown-header">
+                        @{
+                            string username = UserManager.GetUserName(User);
+                            var user = await UserManager.FindByNameAsync(User.Identity?.Name);
+                            string email = await UserManager.GetEmailAsync(user);
+                        }
+                        <h6>@username</h6>
+                        <span>@email</span>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" asp-area="Identity" asp-page="/Account/Manage/Index" title="Minha Conta">
+                            <i class="bi bi-person"></i>
+                            <span>Minha Conta</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" asp-area="Identity" asp-page="/Account/Manage/ChangePassword" title="Alterar Senha">
+                            <i class="bi bi-key"></i>
+                            <span>Alterar Senha</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button id="logout" type="submit" class="dropdown-item d-flex align-items-center">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Sair
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item pe-3">
+                <a class="nav-link d-flex" asp-area="Identity" asp-page="/Account/Register">
+                    <i class="bi bi-card-list"></i>
+                    <span class="d-none d-md-block ps-2">Registrar</span>
+                </a>
+            </li>
+            <li class="nav-item pe-3">
+                <a class="nav-link d-flex" asp-area="Identity" asp-page="/Account/Login">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span class="d-none d-md-block ps-2">Entrar</span>
+                </a>
+            </li>
+        }
+    </ul>
+</nav>

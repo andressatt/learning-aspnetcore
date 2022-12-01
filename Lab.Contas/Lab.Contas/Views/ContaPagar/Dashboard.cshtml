@@ -1,24 +1,11 @@
 ﻿@using System.Text.Json
 @using System.Text.Encodings.Web
-@model IEnumerable<Lab.Contas.Models.ContaPagar>
+@model Lab.Contas.Models.ContaPagarViewModel
 
 @{
     ViewData["Title"] = "Dashboard";
 
-    var contasMesAtual = Model
-        .Where(x => x.Vencimento.Month == DateTime.Now.Month && x.Vencimento.Year == DateTime.Now.Year)
-        .OrderByDescending(x => x.Vencimento).ThenByDescending(x => x.Valor)
-        .ToList();
-    decimal somaMesAtual = contasMesAtual.Sum(x => x.Valor);
-
-    var contasMesAnterior = Model
-        .Where(x => x.Vencimento.Month == DateTime.Now.AddMonths(-1).Month && x.Vencimento.Year == DateTime.Now.AddMonths(-1).Year)
-        .ToList();
-    decimal somaMesAnterior = contasMesAnterior.Sum(x => x.Valor);
-
-    decimal diffMes = (somaMesAtual / somaMesAnterior) - 1;
-
-    var contasParaGrafico = contasMesAtual
+    var contasParaGrafico = Model.ListaContasPagarMes
         .OrderByDescending(x => x.Valor)
         .ThenBy(x => x.Tipo.GetDescription())
         .Select(x => new { value = x.Valor, name = x.Tipo.GetDescription() })
@@ -29,104 +16,104 @@
     <h1>Dashboard</h1>
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-area="" asp-controller="ContaPagar" asp-action="Index">ContaPagar</a></li>
             <li class="breadcrumb-item active">Dashboard</li>
         </ol>
     </nav>
-</div><!-- End Page Title -->
+</div>
 <section class="section dashboard">
     <div class="row">
-
-        <!-- Left side columns -->
-        <div class="col-lg-4">
-            <div class="card info-card revenue-card">
+        <div class="col">
+            <div class="card info-card ano-mes-card">
                 <div class="card-body">
-                    <h5 class="card-title">Contas a Pagar <span>| Este Mês</span></h5>
+                    <h5 class="card-title">Selecione um Período</h5>
                     <div class="d-flex align-items-center">
                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="bi bi-currency-dollar"></i>
+                            <i class="bi bi-calendar"></i>
                         </div>
                         <div class="ps-3">
-                            <h6>@somaMesAtual.ToString("C2")</h6>
-                            @if (diffMes > 0)
+                            <form asp-action="Dashboard">
+                                <input type="month" name="anoMes" class="form-control" value="@($"{Model.Ano}-{Model.Mes:00}")" min="2022-07" max="2030-12" onchange="submit();"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card info-card total-pagar-card">
+                <div class="card-body">
+                    <h5 class="card-title">Contas a Pagar <span>| TOTAL</span></h5>
+                    <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-emoji-dizzy"></i>
+                        </div>
+                        <div class="ps-3">
+                            <h6>@Model.TotalPagar.ToString("C2")</h6>
+                            @if (Model.DiferencaMes > 0)
                             {
                                 <span class="text-danger small pt-1 fw-bold">
-                                    @(diffMes.ToString("P2"))
+                                    @(Model.DiferencaMes.ToString("P2"))
                                 </span>
                                 <span class="text-muted small pt-2 ps-1">aumento</span>
                             }
-                            else
+                            else if (Model.DiferencaMes < 0)
                             {
                                 <span class="text-success small pt-1 fw-bold">
-                                    @((-diffMes).ToString("P2"))
+                                    @((-Model.DiferencaMes).ToString("P2"))
                                 </span>
                                 <span class="text-muted small pt-2 ps-1">diminuição</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted small pt-1 fw-bold">
+                                    @Model.DiferencaMes.ToString("P2")
+                                </span>
                             }
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filtro</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="#">Este Mês</a></li>
-                        <li><a class="dropdown-item" href="#">Este Ano</a></li>
-                    </ul>
-                </div>
-                <div class="card-body pb-0">
-                    <h5 class="card-title">Contas a Pagar <span>| Este Mês</span></h5>
-                    <div id="trafficChart" style="min-height: 400px;" class="echart">
+        </div>
+        <div class="col">
+            <div class="card info-card pago-card">
+                <div class="card-body">
+                    <h5 class="card-title">Contas a Pagar <span>| PAGO</span></h5>
+                    <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-emoji-wink"></i>
+                        </div>
+                        <div class="ps-3">
+                            <h6>@Model.TotalPago.ToString("C2")</h6>
+                        </div>
                     </div>
-                    <script>
-                        document.addEventListener("DOMContentLoaded", () => {
-                            echarts.init(document.querySelector("#trafficChart")).setOption({
-                                tooltip: {
-                                    trigger: 'item'
-                                },
-                                legend: {
-                                    top: '5%',
-                                    left: 'center'
-                                },
-                                series: [{
-                                    name: 'Tipo de Conta',
-                                    type: 'pie',
-                                    radius: ['40%', '70%'],
-                                    avoidLabelOverlap: false,
-                                    label: {
-                                        show: false,
-                                        position: 'center'
-                                    },
-                                    emphasis: {
-                                        label: {
-                                            show: true,
-                                            fontSize: '18',
-                                            fontWeight: 'bold'
-                                        }
-                                    },
-                                    labelLine: {
-                                        show: false
-                                    },
-                                    data: @Html.Raw(JsonSerializer.Serialize(contasParaGrafico))
-                                }]
-                            });
-                        });
-                    </script>
                 </div>
             </div>
-        </div><!-- End Left side columns -->
-
-        <!-- Right side columns -->
+        </div>
+        <div class="col">
+            <div class="card info-card nao-pago-card">
+                <div class="card-body">
+                    <h5 class="card-title">Contas a Pagar <span>| NÃO PAGO</span></h5>
+                    <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                            <i class="bi bi-emoji-expressionless"></i>
+                        </div>
+                        <div class="ps-3">
+                            <h6>@Model.TotalNaoPago.ToString("C2")</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Left side columns -->
         <div class="col-lg-8">
             <div class="row">
-                <!-- Contas a Pagar | Este Mês -->
                 <div class="col-12">
-                    <div class="card recent-sales overflow-auto">
+                    <div class="card contas-pagar overflow-auto">
                         <div class="card-body">
-                            <h5 class="card-title">Contas a Pagar <span>| Este Mês</span></h5>
+                            <h5 class="card-title">Contas a Pagar <span>| Mês @Model.Mes</span></h5>
                             <table class="table table-borderless datatable">
                                 <thead>
                                     <tr>
@@ -138,7 +125,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in contasMesAtual)
+                                    @foreach (var item in Model.ListaContasPagarMes)
                                     {
                                         <tr>
                                             <td scope="row">
@@ -167,7 +154,52 @@
                     </div>
                 </div>
             </div>
-        </div><!-- End Right side columns -->
+        </div>
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Contas a Pagar <span>| Mês @Model.Mes</span></h5>
+                    <div id="trafficChart" style="min-height: 400px;" class="echart">
+                    </div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                            echarts.init(document.querySelector("#trafficChart")).setOption({
+                                tooltip: {
+                                    trigger: 'item'
+                                },
+                                legend: {
+                                    top: '0%',
+                                    left: 'center'
+                                },
+                                series: [{
+                                    name: 'Tipo de Conta',
+                                    type: 'pie',
+                                    radius: ['40%', '70%'],
+                                    avoidLabelOverlap: false,
+                                    label: {
+                                        show: false,
+                                        position: 'center'
+                                    },
+                                    emphasis: {
+                                        label: {
+                                            show: true,
+                                            fontSize: '18',
+                                            fontWeight: 'bold'
+                                        }
+                                    },
+                                    labelLine: {
+                                        show: false
+                                    },
+                                    data: @Html.Raw(JsonSerializer.Serialize(contasParaGrafico))
+                                }]
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
 
     </div>
 </section>

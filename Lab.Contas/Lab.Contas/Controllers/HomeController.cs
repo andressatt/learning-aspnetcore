@@ -18,7 +18,7 @@ namespace Lab.Contas.Controllers
             return RedirectToAction(nameof(ContaPagarController.Dashboard), "ContaPagar");
         }
 
-        public IActionResult Privacy()
+        public IActionResult Ajuda()
         {
             return View();
         }
